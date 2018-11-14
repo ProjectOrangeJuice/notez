@@ -1,0 +1,34 @@
+
+<!-- Sidebar -->
+<nav class=" w3-bar-block w3-collapse w3-large w3-white w3-card-2" id="mySidebar" style="width:250px;height:100%;position:absolute;">
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
+    <i class="fa fa-remove"></i>
+  </a>
+  <h4 class="w3-bar-item"><b>{{ sideNavTitle}}</b></h4>
+  {% for item in sideNavItems %}
+
+  {% if item.subitem != "" %}
+
+  <a onclick="dropCat('{{ item.nameId }}')" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align">
+       {{ item.name }} <i class="fa fa-caret-down"></i>
+     </a>
+     <div id="{{ item.nameId }}" class="w3-bar-block w3-hide w3-padding-large w3-medium">
+     {% for items  in item.subitem %}
+
+     <a href="{{ items.location }}" class="w3-bar-item w3-button">{{ items.name }}</a>
+
+   {% endfor %}
+
+     </div>
+
+
+{% endif %}
+
+{% if item.subitem == "" %}
+<a class="w3-bar-item w3-button w3-hover-black" href="{{ item.link }}">{{ item.name }}</a>
+
+  {% endif %}
+
+  {% endfor %}
+
+</nav>

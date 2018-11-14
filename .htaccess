@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+    RewriteRule ^(src|task|sys)($|/) - [L]
+    RewriteEngine On
+    RewriteRule ^.*$ index.php
+</IfModule>

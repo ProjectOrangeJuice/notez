@@ -1,0 +1,158 @@
+<!-- login window -->
+
+   <div class="centered w3-modal-content " id="loginWindow" style="max-width:600px;display:none;z-index: 5;">
+<div class="w3-card  w3-white" style="margin-top:0%">
+  <div class="w3-center "><br>
+         <span onclick="document.getElementById('loginWindow').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+         <h1 class="w3-text-theme">Notez login</h1>
+       </div>
+
+
+         <div class="w3-section" id="loginF">
+           <form>
+           <label><b>Username</b></label>
+           <input class="w3-input w3-border w3-margin-bottom" id="i1" type="text" placeholder="Enter Username" name="usrname" required>
+           <label><b>Password</b></label>
+           <input class="w3-input w3-border" type="password"  id="i2" placeholder="Enter Password" name="psw" required>
+           <button class="w3-button w3-block w3-theme w3-section w3-padding" type="button" id="loginBut" onclick="loginFunction()">Login</button>
+         </form>
+         </div>
+
+
+       <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+         <button onclick="document.getElementById('loginWindow').style.display='none'" type="button" class="w3-button w3-theme">Cancel</button>
+
+       </div>
+</div>
+</div>
+
+
+<!-- register window -->
+
+   <div class="centered w3-modal-content " id="registerWindow" style="max-width:600px;display:none;z-index: 2;">
+<div class="w3-card  w3-white" style="margin-top:0%">
+  <div class="w3-center "><br>
+         <span onclick="document.getElementById('registerWindow').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+         <h1 class="w3-text-theme">Notez Register</h1>
+       </div>
+
+       <form class="w3-container" id="regF">
+         <div class="w3-section" >
+           <label><b>Username</b></label>
+           <input class="w3-input w3-border w3-margin-bottom" id="r1" type="text" placeholder="Enter Username" name="usrname" required>
+           <label><b>Password</b></label>
+           <input class="w3-input w3-border" type="password"  id="r3" placeholder="Enter Password" name="psw" required>
+           <button class="w3-button w3-block w3-theme w3-section w3-padding" type="button" id="regBut" onclick="regFunction()">Register</button>
+
+         </div>
+       </form>
+
+       <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+         <button onclick="document.getElementById('registerWindow').style.display='none'" type="button" class="w3-button w3-theme">Cancel</button>
+
+       </div>
+</div>
+</div>
+
+
+<!-- error box -->
+<div class="w3-modal-content  centered" id="errorWindow" style="max-width:600px;display:none;z-index: 2;">
+<div class="w3-card  w3-white" style="margin-top:0%">
+<div class="w3-center "><br>
+      <span onclick="document.getElementById('errorWindow').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+      <h1 class="w3-text-theme">Oops</h1>
+    </div>
+      <div id="errorText"></div>
+
+    <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+      <button onclick="document.getElementById('errorWindow').style.display='none'" type="button" class="w3-button w3-theme">Okay</button>
+
+    </div>
+</div>
+</div>
+
+
+<script>
+//hide the login window
+document.getElementById("loginWindow").style.display="none";
+function showLogin(){
+  document.getElementById("loginWindow").style.display="block";
+
+}
+function showRegister(){
+  document.getElementById("registerWindow").style.display="block";
+
+}
+
+
+
+$("#loginF").keydown(function (e) {
+
+  if (e.keyCode == 13) {
+   e.preventDefault();
+   loginFunction();
+  }
+
+});
+
+
+$("#regF").keydown(function (e) {
+
+  if (e.keyCode == 13) {
+   e.preventDefault();
+   loginFunction();
+  }
+
+});
+
+
+
+
+
+function loginFunction() {
+
+$.post( "/sys/user/login.php", { username: $('#i1').val(), password:$('#i2').val() })
+  .done(function( data ) {
+
+	  if(data=="True"){
+		 location.reload();
+		  return;
+	  }else if(data == "False"){
+      document.getElementById("loginWindow").style.display="none";
+      document.getElementById("errorWindow").style.display="block";
+      $('#errorText').html("Incorrect details or account protected");
+    }else{
+      document.getElementById("loginWindow").style.display="none";
+      document.getElementById("errorWindow").style.display="block";
+      $('#errorText').html("An error has occurred <br> "+data);
+    }
+
+  });
+}
+
+function regFunction() {
+
+  $.post( "/sys/user/register.php", { username: $('#r1').val(), password: $('#r3').val() })
+    .done(function( data ) {
+
+  	  if(data=="Registered"){
+        alert("Registered! You can now login");
+        $("#i1").val($('#r1').val());
+        document.getElementById('registerWindow').style.display='none'
+        document.getElementById('loginWindow').style.display='block'
+
+  		  return;
+      }else{
+        document.getElementById("registerWindow").style.display="none";
+        document.getElementById("errorWindow").style.display="block";
+        $('#errorText').html("<center>"+data+"</center>");
+      }
+
+    });
+}
+
+
+
+
+
+</script>

@@ -1,0 +1,52 @@
+{{ include("header.twig") }}
+
+<body>
+
+<header>
+  {{ include("topNav.twig") }}
+</header>
+
+
+
+<section class="w3-main w3-padding-16" style="margin-left:260px;margin-right:10px">
+
+
+  <!-- Boxes -->
+
+    <div class="w3-row-padding w3-center w3-margin-top">
+
+    <div class="w3-threequarter">
+      <div class="w3-card w3-container" style="min-height:300px">
+      <h3 class="w3w3-text-theme"><b>Pages waiting</b></h3><br>
+      <table class='w3-table '><tr class="w3-theme w3-text-white"><th>Info</th><th>Summary</th><th></th><th></th><th></th></tr>
+
+
+        {% for item in waitingItems %}
+        <tr><th>{{ item.info }}</th><th>{{ item.summary }}</th><th><a href='/view/{{ item.view }}'>View</a></th>
+              <th><a href='edit/{{ item.edit }}'>Edit</a></th><th><button
+              onclick='removePage("{{ item.del }}");' class='w3-bar-item w3-button w3-hover-white'>
+              Remove</button></th></tr>
+        {% endfor %}
+</table>
+      </div>
+    </div>
+
+
+    <div class="w3-quarter">
+      <div class="w3-card w3-container" style="min-height:300px">
+  <p>This page shows you the current pages you have to edit. To return, click on the
+    "normal mode". </p>
+    <p>~When creating a new page, the information you add is collected for the
+      approver to decide where it goes</p>
+
+      </div>
+    </div>
+
+
+{{ include("footer.twig") }}
+
+</section>
+
+</body>
+
+{{ include("javascript.html") }}

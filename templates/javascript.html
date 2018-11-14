@@ -1,0 +1,32 @@
+<script>
+
+
+function isHidden(el) {
+    return (el.classList.contains("w3-hide-small"))
+}
+// Used to toggle the menu on small screens when clicking on the menu button
+function side() {
+    var x = document.getElementById("mySidebar");
+    if (isHidden(x)) {
+      x.className = x.className.replace(" w3-hide-small", "");
+      x.className = x.className.replace(" w3-hide-medium", "");
+      document.getElementById("myOverlay").style.display = "block";
+
+    } else {
+            x.className += " w3-hide-small w3-hide-medium";
+            document.getElementById("myOverlay").style.display = "none";
+    }
+}
+
+
+
+function logout(){
+  $.post( "/sys/user/logout.php", {  })
+    .done(function( data ) {
+
+
+  		 location.reload();
+
+    });
+}
+</script>

@@ -1,0 +1,83 @@
+<!-- create new page -->
+
+   <div class="w3-modal-content w3-animate-zoom " id="newPageWindow" style="max-width:600px;display:none;">
+<div class="w3-card w3-display-topmiddle w3-white" style="margin-top:0%">
+  <div class="w3-center "><br>
+         <span onclick="document.getElementById('newPageWindow').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+         <h1 class="w3-text-theme">Create a new page</h1>
+       </div>
+
+       <form class="w3-container">
+         <div class="w3-section">
+           <label><b>Exam board</b></label>
+           <input class="w3-input w3-border w3-margin-bottom" id="i1" type="text" placeholder="Wjec, AQA.."  required>
+           <label><b>Subject</b></label>
+           <input class="w3-input w3-border w3-margin-bottom" id="i2" type="text" placeholder="Science, maths.." required>
+           <label><b>Page name</b></label>
+           <input class="w3-input w3-border w3-margin-bottom" id="i3" type="text" placeholder="Unit 1.2, Unit 4.2.." required>
+           <label><b>Summary</b></label>
+           <input class="w3-input w3-border w3-margin-bottom" id="i4" type="text" placeholder="How to add numbers"  required>
+           <button class="w3-button w3-block w3-theme w3-section w3-padding" type="button" id="createBut" >Create</button>
+
+         </div>
+       </form>
+
+       <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+         <button onclick="document.getElementById('newPageWindow').style.display='none'" type="button" class="w3-button w3-theme">Cancel</button>
+
+       </div>
+</div>
+</div>
+
+  </div>
+
+
+  <div id="dialog-confirm" title="Remove page?" hidden>
+    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>This page will be removed and can't be recovered</p>
+  </div>
+<script>
+
+$("#createBut").click(function(){
+
+var desc = "Exam board: "+$('#i1').val() + "\nSubject: "+ $('#i2').val() + "\nPage name: "+$('#i3').val() + "\nSummary: "+ $('#i4').val()
+$.post( "/sys/editor/createPage", { desc: desc })
+  .done(function( data ) {
+
+	  if(data == "You're not logged in"){
+      alert("You're not logged in!");
+		    return;
+	  }else{
+      document.location.href = "editMode.php?page="+data;
+
+    }
+
+  });
+});
+
+
+function removePage(key){
+  alert("Pages cannot be removed yet");
+  return;
+  $( "#dialog-confirm" ).dialog({
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        buttons: {
+          "Remove": function() {
+            $.post( "/task/remove.php", { page:key })
+              .done(function( data ) {
+
+            	  location.reload();
+
+              });
+            $( this ).dialog( "close" );
+          },
+          Cancel: function() {
+            $( this ).dialog( "close" );
+          }
+        }
+      });
+
+}
+</script>

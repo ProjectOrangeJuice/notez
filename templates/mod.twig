@@ -1,0 +1,170 @@
+{{ include("header.twig") }}
+
+<body onload="loadPage()">
+
+<header>
+  {{ include("topNav.twig") }}
+</header>
+
+
+    {{ include("sideNav.twig") }}
+
+
+<section class="w3-main w3-padding-16" style="margin-left:260px;margin-right:10px">
+
+
+
+  <h1 class="w3-xxlarge w3-text-theme"><b>Approve pages</b></h1>
+
+
+
+  <div id="contentBox">
+
+  </div>
+
+
+
+  <div class="centered w3-modal-content " id="window" style="max-width:600px;display:none;z-index: 5;">
+  <div class="w3-card  w3-white" style="margin-top:0%">
+  <div class="w3-center "><br>
+        <span onclick="document.getElementById('window').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+        <h1 class="w3-text-theme">Placement</h1>
+      </div>
+
+      <form class="w3-container">
+        <div class="w3-section">
+          <p>Details given:
+            <p id="info"></p>
+          <p id="summary"></p>
+
+          <label><b>location</b></label>
+          <input class="w3-input w3-border w3-margin-bottom" id="i1" type="text" placeholder="Wjec, AQA.."  required>
+          <label><b>title</b></label>
+          <input class="w3-input w3-border w3-margin-bottom" id="i2" type="text" placeholder="Science, maths.." required>
+          <label><b>summary</b></label>
+          <input class="w3-input w3-border w3-margin-bottom" id="i3" type="text" placeholder="Unit 1.2, Unit 4.2.." required>
+          <button onclick="save()" class="w3-button w3-block w3-theme w3-section w3-padding" type="button" id="createBut" >Create</button>
+
+        </div>
+      </form>
+
+
+      <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+        <button onclick="document.getElementById('window').style.display='none'" type="button" class="w3-button w3-theme">Cancel</button>
+
+      </div>
+  </div>
+  </div>
+
+   <div style="display:none" hidden>
+   <div id="editorHide"></div></div>
+
+
+{{ include("footer.twig") }}
+
+</section>
+
+
+<script>
+
+
+var skip = 0;
+obj = "";
+var page = "";
+
+function skipPage(){
+  skip +=1;
+  loadPage();
+}
+var dataDump;
+function loadPage(){
+
+$.post( "/sys/editor/getNext.php", { skip: skip })
+ .done(function( data ) {
+   try {
+   obj = JSON.parse(data);
+   dataDump = obj["content"];
+ } catch(e ){
+   $("#contentBox").html("All pages updated!");
+   return;
+ }
+
+});
+
+   $("#contentBox").html(dataDump);
+
+
+
+
+
+
+   $("#info").html("Info: "+obj["description"]);
+   page = obj["pageId"];
+
+ }
+
+
+
+
+
+
+
+
+function save(){
+
+  var content = $("#contentBox").html()
+
+
+$.post( "/sys/editor/changeApprove.php", { page: page, title: $("#i2").val(),location: $("#i1").val(), summary: $("#i3").val(), value: 1 })
+  .done(function( data ) {
+
+	  if(data.substring(0,1)=="f"){
+		    alert(data +" you may need to login again");
+		  return;
+	  }else if(data.substring(0,3) == "the")
+    {
+      var link = "merge.php?page="+page+"&loc="+$("#i1").val();
+window.location = encodeURI(link);
+//window.open(encodeURI(link));
+
+
+    }
+    else{
+    loadPage();
+    document.getElementById('window').style.display='none'
+    }
+
+  });
+}
+function decline(){
+
+
+  $.post( "/sys/editor/changeApprove.php", { page: page, value: 0 })
+    .done(function( data ) {
+
+  	  if(data.substring(0,1)=="f"){
+  		    alert(data +" you may need to login again");
+  		  return;
+  	  }else if(data.substring(0,3) == "the")
+      {
+        var link = "merge.php?page="+page+"&loc="+$("#i1").val();
+  window.location = encodeURI(link);
+  //window.open(encodeURI(link));
+
+
+      }
+      else{
+      loadPage();
+      document.getElementById('window').style.display='none'
+      }
+
+    });
+  }
+loadPage();
+</script>
+
+
+
+</body>
+
+{{ include("javascript.html") }}

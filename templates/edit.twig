@@ -1,0 +1,193 @@
+{{ include("header.twig") }}
+
+<body>
+
+<header>
+  {{ include("topNav.twig") }}
+
+  <!-- include libraries(jQuery, bootstrap) -->
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<style>
+.note-editor { z-index:-5; }
+</style>
+<!-- include summernote css/js -->
+<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</header>
+
+{{ include("sideNav.twig") }}
+
+<section class="w3-main w3-padding-16" style="margin-left:260px;margin-right:10px">
+
+<style>
+.popover { top: auto; left: auto }
+</style>
+
+<div id="summernote"></div>
+
+<div style="display:none" hidden>
+<div id="editorHide"></div></div>
+
+
+
+
+
+  <div id="dialog-confirm" title="Remove page?" hidden>
+    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>This page will be removed and can't be recovered</p>
+  </div>
+
+
+
+
+<script>
+$(document).ready(function() {
+  prep();
+});
+
+
+function prep(){
+
+  $.post( "/sys/editor/getContent.php", { page: "{{ page }}" })
+    .done(function( data ) {
+      if(data == "Page can't be accessed"){
+        alert("This page can't be accessed.");
+       document.location.href="/user/editor";
+      }
+      $("#summernote").html(data);
+  $('#summernote').summernote({
+  callbacks: {
+    onImageUpload: function(files, editor, welEditable) {
+                sendFile(files[0], editor, welEditable);
+            }
+  }
+});
+});
+}
+
+function sendFile(file, editor, welEditable) {
+           data = new FormData();
+           data.append("file", file);
+           $.ajax({
+               data: data,
+               type: "POST",
+               url: "/sys/editor/imageUpload.php",
+               cache: false,
+               contentType: false,
+               processData: false,
+               success: function(url) {
+                 $('#summernote').summernote('insertImage', url);
+
+               }
+           });
+       }
+
+
+
+    contentLast = "";
+    function save(){
+    var content = $('#summernote').summernote('code');
+
+    if(content != contentLast){
+      contentLast = content;
+
+
+
+    $.post( "/sys/editor/updatePage.php", { page: "{{ page }}", content: content })
+      .done(function( data ) {
+
+    	  if(data == "Updated"){
+          console.log("updated!");
+          $("#save").css("background-color","green");
+          setTimeout(
+      function()
+      {
+        $("#save").css("background-color","");
+      }, 2000);
+
+
+    	  }else if(data== "Didn't update"){
+          console.log("No change?");
+          $("#save").css("background-color","orange");
+          setTimeout(
+      function()
+      {
+        $("#save").css("background-color","");
+      }, 2000);
+
+    }else{ alert(data +" you may need to login again");
+  }
+
+      });
+    }else{
+
+    }
+    }
+
+
+
+
+
+
+
+
+function submit(){
+save();
+
+$.post( "/sys/editor/requestApprove.php", { page: "{{ page }}" })
+  .done(function( data ) {
+
+	  if(data=="Updated"){
+      alert("Submitted");
+
+        document.location.href="/user/editor";
+
+	  }else{
+      alert(data);
+    return;
+
+    }
+
+  });
+}
+
+
+function deleter(){
+  alert("Cannot delete at the moment");
+  return;
+  $( "#dialog-confirm" ).dialog({
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        buttons: {
+          "Remove": function() {
+            $.post( "/task/remove.php", { page:"{{ delKey }}" })
+              .done(function( data ) {
+
+            	    document.location.href = "/user/editor";
+
+              });
+            $( this ).dialog( "close" );
+          },
+          Cancel: function() {
+            $( this ).dialog( "close" );
+          }
+        }
+      });
+
+}
+
+</script>
+
+
+{{ include("footer.twig") }}
+
+</section>
+
+</body>
+
+{{ include("javascript.html") }}

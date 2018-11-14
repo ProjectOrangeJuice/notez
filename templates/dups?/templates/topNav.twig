@@ -1,0 +1,19 @@
+<!-- Navbar -->
+
+  <div class=" w3-theme w3-card">
+<a href="#" class="w3-large w3-bar-item w3-button w3-padding-large w3-theme-dark">Notez.co.uk</a>
+
+
+  {% if login %}
+  <a href="/user/editor" class="w3-large w3-bar-item w3-button w3-padding-large w3-hover-white w3-right w3-hide-small">Editor</a>
+  <a href="#" class="w3-large w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-white w3-right">Edit</a>
+  {% endif %}
+
+  {% if not login %}
+  <button onclick="showLogin()" class="w3-large w3-bar-item w3-button w3-padding-large w3-hover-white w3-right"><i class="fa fa-sign-in"></i><span class="w3-hide-small">Login</span></button>
+    <button onclick="showRegister()" class="w3-large w3-bar-item w3-button w3-padding-large w3-hover-white w3-right"><i class="fa fa-user-plus"></i><span class="w3-hide-small">Register</span></button>
+  {% endif %}
+
+<a href="javascript:void(0)" class="w3-button w3-theme w3-hide-large w3-margin-right" onclick="side()">☰</a>
+
+</div>

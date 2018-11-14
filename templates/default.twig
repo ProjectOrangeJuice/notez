@@ -1,0 +1,48 @@
+{{ include("header.twig") }}
+
+<body>
+
+<header>
+  {{ include("topNav.twig") }}
+</header>
+<script src="/src/javascript/clean.js"></script>
+
+{{ include("sideNav.twig") }}
+
+<section class="w3-main w3-padding-16" style="margin-left:260px;margin-right:10px">
+
+<div id="content"></div>
+
+
+
+<script>
+
+
+
+
+$.post( "/sys/getContentView.php", { page: "{{ page }}" })
+ .done(function( data ) {
+
+
+    $("#content").html(data);
+
+
+ });
+
+
+
+
+
+</script>
+
+
+
+{{ include("premade/forms.html") }}
+
+{{ include("footer.twig") }}
+
+</section>
+
+</body>
+
+{{ include("javascript.html") }}

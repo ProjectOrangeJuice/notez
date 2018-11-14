@@ -1,0 +1,75 @@
+{{ include("header.twig") }}
+
+<body>
+
+<header>
+  {{ include("topNav.twig") }}
+  <script src="/src/javascript/clean.js"></script>
+</header>
+
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="side()" style="cursor:pointer;margin-left:250px;" title="close side menu" id="myOverlay"></div>
+<!-- Sidebar -->
+<nav class=" w3-bar-block w3-hide-small w3-hide-medium w3-collapse w3-large w3-white w3-card-2" id="mySidebar" style="z-index:5;width:250px;height:100%;position:absolute;">
+  <a href="javascript:void(0)" onclick="side()" class="w3-right w3-xlarge w3-padding-large w3-hover-white w3-hide-large" title="Close Menu">
+    <i class="fa fa-remove"></i>
+  </a>
+
+<div class="w3-bar-item">
+Created by {{ user }} <br>
+Description as follows:<br>
+{{ desc }}
+</div>
+</nav>
+
+
+<section class="w3-main w3-padding-16" style="margin-left:260px;margin-right:10px">
+
+<div id="content"></div>
+
+<script>
+function recreate(key){
+
+  $.post( "/sys/editor/copyPrivate.php", { page: key })
+   .done(function( data ) {
+     if(data == "Page can't be copied" || data == "You're not logged in"){ alert(data) }
+     else{
+       document.location.href = "/user/edit?"+data;
+     }
+
+   });
+
+}
+
+</script>
+
+{% if not waitingItems %}
+<script>
+
+$.post( "/sys/editor/getContentView.php", { page: "{{ content }}" })
+ .done(function( data ) {
+
+
+    $("#content").html(data);
+
+
+ });
+
+
+
+
+</script>
+{% endif %}
+
+
+
+{{ include("premade/forms.html") }}
+
+{{ include("footer.twig") }}
+
+</section>
+
+</body>
+
+{{ include("javascript.html") }}

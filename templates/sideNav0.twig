@@ -1,0 +1,45 @@
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="side()" style="cursor:pointer;margin-left:250px;" title="close side menu" id="myOverlay"></div>
+<!-- Sidebar -->
+<nav class=" w3-bar-block w3-hide-small w3-hide-medium w3-collapse w3-large w3-white w3-card-2" id="mySidebar" style="z-index:5;width:250px;height:100%;position:absolute;">
+  <a href="javascript:void(0)" onclick="side()" class="w3-right w3-xlarge w3-padding-large w3-hover-white w3-hide-large" title="Close Menu">
+    <i class="fa fa-remove"></i>
+  </a>
+  <h4 class="w3-bar-item"><b>{{ sideNavTitle}}</b></h4>
+  {% for item in sideNavItems %}
+
+  {% if item.subitem != "" %}
+
+  <a onclick="dropCat('{{ item.nameId }}')" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align">
+       {{ item.name }} <i class="fa fa-caret-down"></i>
+     </a>
+     <div id="{{ item.nameId }}" class="w3-bar-block w3-hide w3-padding-large w3-medium">
+     {% for items  in item.subitem %}
+
+     <a href="{{ items.location }}" class="w3-bar-item w3-button">{{ items.name }}</a>
+
+   {% endfor %}
+
+
+
+
+
+     </div>
+
+
+{% endif %}
+
+{% if item.subitem == "" %}
+<a class="w3-bar-item w3-button w3-hover-black" href="{{ item.location }}">{{ item.name }}</a>
+
+  {% endif %}
+
+  {% endfor %}
+
+  {% for item in sideNavAlt %}
+
+   <button {{ item.inner|raw }} class="w3-bar-item w3-button">{{ item.outter|raw }}</button>
+
+  {% endfor %}
+
+</nav>

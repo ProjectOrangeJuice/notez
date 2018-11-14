@@ -1,0 +1,17 @@
+<!-- Navbar -->
+
+  <div class=" w3-theme w3-card">
+<a href="/" class="w3-large w3-bar-item w3-button w3-padding-large w3-theme-dark">Notez.co.uk</a>
+
+{% for item in topNav %}
+
+
+
+<a {{ item.link|raw }} class="w3-large w3-bar-item w3-button w3-padding-large w3-hover-white w3-right">{{ item.text|raw }}</a>
+
+
+{% endfor %}
+
+<a href="javascript:void(0)" class="w3-button w3-theme w3-hide-large w3-margin-right" onclick="side()">☰</a>
+
+</div>

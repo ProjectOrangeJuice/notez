@@ -1,0 +1,77 @@
+{{ include("header.twig") }}
+
+
+<body>
+
+<header>
+  {{ include("topNav.twig") }}
+  <script src="/src/javascript/tree.js"></script>
+  <link rel="stylesheet" href="/src/css/tree.css">
+
+</header>
+
+
+</div>
+
+
+{{ include("sideNav.twig") }}
+
+<body >
+  <section class="w3-main w3-padding-16" style="margin-left:260px;margin-right:10px">
+
+<div id="tree1"></div>
+
+
+
+</section>
+<script>
+
+var data = {{ allPages|raw }};
+
+
+$(function() {
+    $('#tree1').tree({
+      dragAndDrop: true,
+        data: data
+    });
+});
+
+function save(){
+
+  var treeJ = $('#tree1').tree('toJson');
+
+
+  $.post( "/sys/admin/updateTree.php", { nav: treeJ })
+    .done(function( data ) {
+      alert(data);
+
+    });
+
+
+
+
+}
+
+
+
+</script>
+
+  <div id="menuEditor">
+
+  <div>
+  {% for item in allPages %}
+
+  {{ item.name }}
+
+
+
+  {% endfor %}
+  </div>
+
+
+
+
+
+{{ include("footer.twig") }}
+
+</body>
