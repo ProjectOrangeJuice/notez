@@ -6,7 +6,7 @@ $template =  $twig->load("view.twig");
 
 
 if(isset($ending)){
-  $stmt = $conn->prepare("SELECT * FROM page,login where pageId = ?");
+  $stmt = $conn->prepare("SELECT * FROM page,login where pageId = ? AND page.userId = login.userId");
   if ($stmt->execute(array($ending))) {
     while ($row = $stmt->fetch()) {
       $content = $row["pageId"];

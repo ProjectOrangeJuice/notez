@@ -1,2 +1,8 @@
 sys/connection.php
 vendor/
+atom
+*error_log
+src/img/users/*
+sys/cleaner/standalone/HTMLPurifier/*
+sys/clean/standalone/HTMLPurifier/*
+src/thumb/*

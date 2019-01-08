@@ -1,5 +1,6 @@
 <?php
-  $se = "SELECT pageId,description,approved FROM page WHERE userId=:user";
+  $se = "SELECT pageId,description,approved,edited FROM page WHERE userId=:user
+   and NOT EXISTS (SELECT * FROM removed WHERE removed.pageId = page.pageId)";
   $stmt = $conn->prepare($se);
   $userId = $_SESSION["user_id"];
   $stmt->bindParam(":user",$userId);
@@ -23,11 +24,12 @@
             $approved = "No";
             break;
     }
-       array_push($waiting,array("info"=>$row["description"],"key"=>$row["pageId"],"approved"=>$approved));
+       array_push($waiting,array("info"=>$row["description"],"key"=>$row["pageId"],"approved"=>$approved,"edit"=>$row["edited"]));
        }
      }
 
-$side = array(array("inner"=>"onclick=\"document.getElementById('newPageWindow').style.display='block'\"","outter"=>"Create page"));
+$side = array(array("inner"=>"onclick=\"document.getElementById('newPageWindow').style.display='block'\"","outter"=>"Create page"),
+array("inner"=>"onclick='removePublic()'","outter"=>"Remove public"));
 
 $top = array(array("link"=>"href=/settings","text"=>"Settings"),
 array("link"=>"onclick='logout()'","text"=>"Logout"));

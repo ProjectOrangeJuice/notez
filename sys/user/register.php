@@ -14,6 +14,8 @@ if(!isset($username,$password)){
   echo "Error in password";
 }else{
 
+    if(!checkBrute($_SERVER['REMOTE_ADDR'], $conn)){
+
   $se = "SELECT username FROM login WHERE username=:user";
   $stmt = $conn->prepare($se);
   $stmt->bindParam(":user",$username);
@@ -30,14 +32,16 @@ if($row){
   $stmt->bindParam(":user",$username);
   $stmt->bindParam(":pass",$password);
   $stmt->execute();
-
+  insertBrute($_SERVER['REMOTE_ADDR'],$conn);
     echo "Registered";
 
 
 }
 
 }
-
+}else{
+  echo "Oops you've been limited";
+}
 
 
 

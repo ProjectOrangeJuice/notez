@@ -2,47 +2,82 @@
 
 <body>
 
-<header>
-  {{ include("topNav.twig") }}
-</header>
-<script src="/src/javascript/clean.js"></script>
+  <header>
+    {{ include("topNav.twig") }}
+  </header>
 
-{{ include("sideNav.twig") }}
+  {{ include("sideNav.twig") }}
 
-<section class="w3-main w3-padding-16" style="margin-left:260px;margin-right:10px">
+  <section class="w3-main w3-padding-16" style="margin-left:260px;margin-right:10px">
 
-<div id="content"></div>
-
+    <div id="content" class="w3-padding">{{ page|raw }}</div>
 
 
-<script>
+    <div id="modal01" class="w3-modal" onclick="this.style.display='none'" >
+        <span class="w3-button w3-hover-red w3-xlarge w3-display-topright w3-theme" style="margin-top:150px;">&times;</span>
+        <div class="w3-modal-content w3-animate-zoom" style="margin-top:150px;">
+          <img id="img01" style="width:95%">
+        </div>
+      </div>
+
+    <script>
+      function doAfter() {
+        // Get the modal
+        var modal = document.getElementById('modal01');
+
+        // Get the image and insert it inside the modal - use its "alt" text as a caption var img = document.getElementById('myImg');
+        var modalImg = document.getElementById("img01");
+        var captionText = document.getElementById("caption");
+
+        $( "#content img" ).on( "click", function() {
+          console.log( $( this ).text() );
+          modal.style.display = "block";
+          modalImg.src = this.src;
+
+        });
 
 
 
-
-$.post( "/sys/getContentView.php", { page: "{{ page }}" })
- .done(function( data ) {
+      }
 
 
-    $("#content").html(data);
+       function resizeAll(){
+         $( "#content img" ).each(function() {
+           $(this).css("max-width","95%");
+         });
+       }
+
+       resizeAll();
+
+    </script>
+
+    <script>
+
+      function copy() {
+
+        $.post("/sys/editor/copyPublic.php", {page: "{{ pid }}"}).done(function(data) {
+          if (data == "Page can't be copied") {
+            alert("Page can't be copied");
+          } else if (data == "You're not logged in") {
+            alert("You're not logged in!");
+          } else {
+            location.assign("/user/edit?" + data);
+          }
+
+        });
+      }
+
+        doAfter();
 
 
- });
+    </script>
 
+    {{ include("premade/forms.html") }}
 
-
-
-
-</script>
-
-
-
-{{ include("premade/forms.html") }}
-
-{{ include("footer.twig") }}
-
+  </section>
+  <section class="w3-main" style="margin-left:250px">
+    {{ include("footer.twig") }}
+  </body>
 </section>
-
-</body>
 
 {{ include("javascript.html") }}

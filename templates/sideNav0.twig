@@ -5,40 +5,38 @@
   <a href="javascript:void(0)" onclick="side()" class="w3-right w3-xlarge w3-padding-large w3-hover-white w3-hide-large" title="Close Menu">
     <i class="fa fa-remove"></i>
   </a>
-  <h4 class="w3-bar-item"><b>{{ sideNavTitle}}</b></h4>
+  <h4 class="w3-bar-item">
+    <b>{{ sideNavTitle}}</b>
+  </h4>
   {% for item in sideNavItems %}
 
-  {% if item.subitem != "" %}
+    {% if item.subitem != "" %}
 
-  <a onclick="dropCat('{{ item.nameId }}')" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align">
-       {{ item.name }} <i class="fa fa-caret-down"></i>
-     </a>
-     <div id="{{ item.nameId }}" class="w3-bar-block w3-hide w3-padding-large w3-medium">
-     {% for items  in item.subitem %}
+      <a onclick="dropCat('{{ item.nameId }}')" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align">
+        {{ item.name }}
+        <i class="fa fa-caret-down"></i>
+      </a>
+      <div id="{{ item.nameId }}" class="w3-bar-block w3-hide w3-padding-large w3-medium">
+        {% for items in item.subitem %}
 
-     <a href="{{ items.location }}" class="w3-bar-item w3-button">{{ items.name }}</a>
+          <a href="{{ items.location }}" class="w3-bar-item w3-button">{{ items.name }}</a>
 
-   {% endfor %}
+        {% endfor %}
 
+      </div>
 
+    {% endif %}
 
+    {% if item.subitem == "" %}
+      <a class="w3-bar-item w3-button w3-hover-black" href="{{ item.location }}">{{ item.name }}</a>
 
-
-     </div>
-
-
-{% endif %}
-
-{% if item.subitem == "" %}
-<a class="w3-bar-item w3-button w3-hover-black" href="{{ item.location }}">{{ item.name }}</a>
-
-  {% endif %}
+    {% endif %}
 
   {% endfor %}
 
   {% for item in sideNavAlt %}
 
-   <button {{ item.inner|raw }} class="w3-bar-item w3-button">{{ item.outter|raw }}</button>
+    <button {{ item.inner|raw }} class="w3-bar-item w3-button">{{ item.outter|raw }}</button>
 
   {% endfor %}
 

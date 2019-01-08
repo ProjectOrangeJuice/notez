@@ -6,16 +6,16 @@
   {{ include("topNav.twig") }}
 
   <!-- include libraries(jQuery, bootstrap) -->
-<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
-<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+<link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <style>
-.note-editor { z-index:1; }
+.note-toolbar { z-index:1 !important; }
 </style>
 <!-- include summernote css/js -->
-<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
-<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </header>
 
@@ -43,6 +43,17 @@
 
 
 
+
+      <div class="w3-card-4 "id="saveBox"
+      style="max-width:70px;position: fixed; top: 15px; left: 50%;
+      transform: translate(-50%, -50%);z-index:10;" hidden>
+        <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+          Saved
+        </div>
+    </div>
+
+
+
 <script>
 $(document).ready(function() {
   prep();
@@ -59,13 +70,19 @@ function prep(){
       }
       $("#summernote").html(data);
   $('#summernote').summernote({
+dialogsInBody: true,
+    otherStaticBar:'#header-space',
+
   callbacks: {
     onImageUpload: function(files, editor, welEditable) {
                 sendFile(files[0], editor, welEditable);
             }
   }
 });
+//$("#summernote").summernote("removeModule", "imagePopover");
+//$(".note-control-sizing").hide();
 });
+
 }
 
 function sendFile(file, editor, welEditable) {
@@ -79,8 +96,15 @@ function sendFile(file, editor, welEditable) {
                contentType: false,
                processData: false,
                success: function(url) {
-                 $('#summernote').summernote('insertImage', url);
+                 if(url.includes("Sorry")){
+                   alert(url);
+                 }else{
+              //   $('#summernote').summernote('insertImage', url);
+                 $('#summernote').summernote('insertImage', url, function ($image) {
+  $image.css('max-width', '95%');
+});
 
+               }
                }
            });
        }
@@ -89,6 +113,7 @@ function sendFile(file, editor, welEditable) {
 
     contentLast = "";
     function save(){
+      resizeAll();
     var content = $('#summernote').summernote('code');
 
     if(content != contentLast){
@@ -102,6 +127,8 @@ function sendFile(file, editor, welEditable) {
     	  if(data == "Updated"){
           console.log("updated!");
           $("#save").css("background-color","green");
+          $("#saveBox").show();
+          $("#saveBox").fadeOut(3000);
           setTimeout(
       function()
       {
@@ -129,9 +156,15 @@ function sendFile(file, editor, welEditable) {
 
 
 
+    setInterval(function() {
+      resizeAll();
+    }, 5000);
 
-
-
+function resizeAll(){
+  $( "#summernote img" ).each(function() {
+    $(this).css("max-width","95%");
+  });
+}
 
 
 function submit(){

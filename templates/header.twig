@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <title>{{ title }}</title>
+<meta name="description" content="Collaborative notes - {{ desc }}">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="/src/css/w3.css">
@@ -20,3 +21,21 @@
 body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
 
 </style>
+
+
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#DD4124"
+    },
+    "button": {
+      "background": "#fff",
+      "text": "#237afc"
+    }
+  }
+})});
+</script>

@@ -11,10 +11,12 @@ function side() {
       x.className = x.className.replace(" w3-hide-small", "");
       x.className = x.className.replace(" w3-hide-medium", "");
       document.getElementById("myOverlay").style.display = "block";
+      setCookie("sideBar","open",10);
 
     } else {
             x.className += " w3-hide-small w3-hide-medium";
             document.getElementById("myOverlay").style.display = "none";
+            setCookie("sideBar","closed",10);
     }
 }
 
@@ -28,5 +30,40 @@ function logout(){
   		 location.reload();
 
     });
+}
+
+//display the sidebar if it was open before
+if(getCookie("sideBar") == "open"){
+  var x = document.getElementById("mySidebar");
+  if (isHidden(x)) {
+    x.className = x.className.replace(" w3-hide-small", "");
+    x.className = x.className.replace(" w3-hide-medium", "");
+    document.getElementById("myOverlay").style.display = "block";
+
+  }
+}
+
+
+function setCookie(cname, cvalue, exmins) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exmins*60000));
+  var expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
 }
 </script>

@@ -53,10 +53,14 @@ $.post( "/sys/editor/getContentView.php", { page: "{{ content }}" })
 
     $("#content").html(data);
 
-
+    resizeAll();
  });
 
-
+ function resizeAll(){
+   $( "#content img" ).each(function() {
+     $(this).css("max-width","95%");
+   });
+ }
 
 
 </script>

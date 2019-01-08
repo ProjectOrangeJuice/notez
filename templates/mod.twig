@@ -4,8 +4,23 @@
 
 <header>
   {{ include("topNav.twig") }}
+  <!-- include libraries(jQuery, bootstrap) -->
+<link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<style>
+.note-toolbar { z-index:1 !important; }
+</style>
+<!-- include summernote css/js -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="/src/javascript/html2canvas.js"></script>
 </header>
-
+<style>
+.popover { top: auto; left: auto }
+</style>
 
     {{ include("sideNav.twig") }}
 
@@ -20,6 +35,9 @@
 
   <div id="contentBox">
 
+  </div>
+
+  <div id="imageBox">
   </div>
 
 
@@ -55,6 +73,30 @@
       </div>
   </div>
   </div>
+
+
+  <div id="merge" class="w3-modal">
+     <div class="w3-modal-content w3-animate-top w3-card-4">
+       <header class="w3-container w3-theme">
+         <span onclick="document.getElementById('merge').style.display='none'"
+         class="w3-button w3-display-topright">&times;</span>
+         <h2>Merge issue</h2>
+       </header>
+       <div class="w3-container">
+         <div id="orginal" class="w3-half">Orginal box</div>
+         <div class="w3-half">
+         <div id="new">New</div>
+         <button onclick="decline()" class="w3-button">decline</button>
+         <button onclick="mergeOver()" class="w3-button">Merge</button>
+       </div>
+       </div>
+
+     </div>
+   </div>
+
+
+
+
 
    <div style="display:none" hidden>
    <div id="editorHide"></div></div>
@@ -101,13 +143,76 @@ $.post( "/sys/editor/getNext.php", { skip: skip })
    $("#info").html("Info: "+obj["description"]);
    page = obj["pageId"];
 
+
+   $("#i1").val(obj["location"]);
+   $("#i2").val(obj["title"]);
+   $("#i3").val(obj["description"]);
+
+
+   resizeAll();
+
  }
 
 
+  function resizeAll(){
+    $( "#contentBox img" ).each(function() {
+      $(this).css("max-width","95%");
+    });
+  }
+
+function mergeOver(){
+
+    var content = $("#new").html()
+
+  $.post( "/sys/editor/changeApprove.php", { force: "yes",page: page, title: $("#i2").val(),location: $("#i1").val(), summary: $("#i3").val(), value: 1})
+    .done(function( data ) {
+
+  	  if(data.substring(0,1)=="f"){
+  		    alert(data +" you may need to login again");
+  		  return;
+  	  }else if(data.substring(0,3) == "Pub")
+      {
+        alert("public issue");
+        merge($("#i1").val());
 
 
 
+      }
+      else{
+      loadPage();
+      document.getElementById('window').style.display='none'
+        document.getElementById('merge').style.display='none'
+      }
 
+    });
+}
+
+
+function mergeIssue(loc){
+  document.getElementById('merge').style.display='block';
+  $("#new").html($("#contentBox").html());
+  $('#new').summernote({
+dialogsInBody: true,
+    otherStaticBar:'#header-space',
+  callbacks: {
+    onImageUpload: function(files, editor, welEditable) {
+                sendFile(files[0], editor, welEditable);
+            }
+  }
+});
+
+
+
+  $.post( "/sys/editor/getContentPublic.php", { page: loc })
+   .done(function( data ) {
+
+
+      $("#orginal").html(data);
+
+
+   });
+
+}
 
 
 function save(){
@@ -115,17 +220,19 @@ function save(){
   var content = $("#contentBox").html()
 
 
-$.post( "/sys/editor/changeApprove.php", { page: page, title: $("#i2").val(),location: $("#i1").val(), summary: $("#i3").val(), value: 1 })
+
+$.post( "/sys/editor/changeApprove.php", { page: page, title: $("#i2").val(),location: $("#i1").val(), summary: $("#i3").val(), value: 1})
   .done(function( data ) {
 
 	  if(data.substring(0,1)=="f"){
 		    alert(data +" you may need to login again");
 		  return;
-	  }else if(data.substring(0,3) == "the")
+	  }else if(data.substring(0,3) == "Pub")
     {
-      var link = "merge.php?page="+page+"&loc="+$("#i1").val();
-window.location = encodeURI(link);
-//window.open(encodeURI(link));
+      alert("public issue");
+      document.getElementById('window').style.display='none'
+      mergeIssue($("#i1").val());
+
 
 
     }

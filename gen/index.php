@@ -20,6 +20,7 @@ if($login){
 
 echo $template->render(array(
   'sideNavItems' => $naver,
+  "desc" => "This site contains a set of notes for each exam  board. Helping you to learn what you need for your exam",
   'topNav' => $topNav
 ));
 

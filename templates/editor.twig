@@ -3,81 +3,159 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 <body>
+  {{ include("javascript.html") }}
+  <header>
+    {{ include("topNav.twig") }}
+  </header>
+  <style>
+    th {
+      -webkit-user-select: none;
+      /* Chrome/Safari */
+      -moz-user-select: none;
+      /* Firefox */
+      -ms-user-select: none;
+      /* IE10+ */
 
-<header>
-  {{ include("topNav.twig") }}
-</header>
+      /* Rules below not implemented in browsers yet */
+      -o-user-select: none;
+      user-select: none;
+    }
+  </style>
 
+  {{ include("sideNav.twig") }}
 
-{{ include("sideNav.twig") }}
+  <section class="w3-main w3-padding-16" style="margin-left:260px;margin-right:10px">
 
-<section class="w3-main w3-padding-16" style="margin-left:260px;margin-right:10px">
+    {{ include("premade/editorForms.html") }}
 
-
-
-{{ include("premade/editorForms.html") }}
-
-  <!-- Boxes -->
+    <!-- Boxes -->
 
     <div class="w3-row-padding w3-center w3-margin-top">
 
+      <div class="w3-quarter w3-hide">
+        <div class="w3-card w3-container" style="min-height:300px">
+          <p>This is just an empty box</p>
 
-
-          <div class="w3-quarter w3-hide">
-            <div class="w3-card w3-container" style="min-height:300px">
-        <p>This is just an empty box</p>
-
-            </div>
-          </div>
-
-    <div class="w3-threequarter">
-
-
-      <div class="w3-card w3-container" style="min-height:300px">
-      <h3 class="w3w3-text-theme"><b>Pages</b></h3><br>
-      <table class='w3-table '><tr class="w3-theme w3-text-white"><th>Description</th><th>Public?</th><th></th><th></th></tr>
-
-
-        {% for item in waitingItems %}
-        <tr><th>{{ item.info }}</th>
-          <th>{{ item.approved }}</th>
-
-              <th><a class="w3-button" href='/view?{{ item.key }}'>View</a></th>
-              <th>
-                {% if item.approved == "Yes" %}
-                <button class="w3-button" onclick='recreate({{ item.key }})'>Copy</a>
-                {% else %}
-                <a class="w3-button" href='/user/edit?{{ item.key }}'>Edit</a>
-                {% endif %}
-
-              </th></tr>
-        {% endfor %}
-</table>
+        </div>
       </div>
-    </div>
 
+      <div class="">
 
+        <div class="w3-card w3-container" style="min-height:300px">
+          <h3 class="w3w3-text-theme">
+            <b>Pages</b>
+          </h3><br>
+          <table class='w3-table '>
+            <tr class="w3-theme">
+              <th id="desc">Description
+                <i class="fa fa-sort"></i>
+              </th>
+              <th id="le">Last edit
+                <i class="fa fa-sort"></i>
+              </th>
+              <th id="public">Public
+                <i class="fa fa-sort"></i>
+              </th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
 
+            {% for item in waitingItems %}
+              <tr>
+                <th>
+                  <p id="page{{ item.key}}" class="infoEdit" contenteditable="true">{{ item.info }}</p>
+                </th>
+                <th>{{ item.edit }}</th>
+                <th>
+                  <p>{{ item.approved }}</p>
+                </th>
 
-{{ include("footer.twig") }}
+                <th>
+                  <a class="w3-button" href='/view?{{ item.key }}'>View</a>
+                </th>
 
-</section>
+                <th>
+                  {% if item.approved == "Yes" %}
+                    <button class="w3-button" onclick='recreate({{ item.key }})'>Copy</a>
+                  {% else %}
+                    <a class="w3-button" href='/user/edit?{{ item.key }}'>Edit</a>
+                  {% endif %}
 
-<script>
-function recreate(key){
+                </th>
+                <th>
+                  <span onclick="removePage({{ item.key }})" class="w3-button">&times;</span>
+                </th>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
 
-  $.post( "/sys/editor/copyPrivate.php", { page: key })
-   .done(function( data ) {
-     if(data == "Page can't be copied" || data == "You're not logged in"){ alert(data) }
-     else{
-       document.location.href = "/user/edit?"+data;
-     }
+      {{ include("footer.twig") }}
 
-   });
+    </section>
 
-}
-</script>
+    <script>
 
-</body>
+      //startup sorter
+      if (getCookie("sorter")) {
+        $("#" + getCookie("sorter")).click();
+        $("#" + getCookie("sorter")).click();
+      }
 
-{{ include("javascript.html") }}
+      $('th').click(function() {
+        console.log($(this).prop('id'))
+        setCookie("sorter", $(this).prop('id'), 100);
+        var table = $(this).parents('table').eq(0)
+        var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+        this.asc = !this.asc
+        if (!this.asc) {
+          rows = rows.reverse()
+        }
+        for (var i = 0; i < rows.length; i++) {
+          table.append(rows[i])
+        }
+      })
+      function comparer(index) {
+        return function(a, b) {
+          var valA = getCellValue(a, index),
+            valB = getCellValue(b, index)
+          return $.isNumeric(valA) && $.isNumeric(valB)
+            ? valA - valB
+            : valA.toString().localeCompare(valB)
+        }
+      }
+      function getCellValue(row, index) {
+        return $(row).children('td').eq(index).text()
+      }
+
+      function recreate(key) {
+
+        $.post("/sys/editor/copyPrivate.php", {page: key}).done(function(data) {
+          if (data == "Page can't be copied" || data == "You're not logged in") {
+            alert(data)
+          } else {
+            document.location.href = "/user/edit?" + data;
+          }
+
+        });
+
+      }
+    </script>
+
+  </body>
+
+  <script>
+    //script to change desc of pages.
+    $(".infoEdit").focusout(function(e) {
+      var page = e.currentTarget.id;
+      page = page.split("page")[1];
+      var desc = document.getElementById(e.currentTarget.id).innerHTML;
+      $.post("/sys/editor/updateInfo.php", {
+        page: page,
+        desc: desc
+      }).done(function(data) {});
+
+    })
+  </script>

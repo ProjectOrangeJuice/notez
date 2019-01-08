@@ -1,0 +1,42 @@
+{{ include("header.twig") }}
+
+<body>
+
+  <header>
+    {{ include("topNav.twig") }}
+  </header>
+
+  {{ include("sideNav.twig") }}
+
+  <section class="w3-main w3-padding-16" style="margin-left:260px;margin-right:10px">
+
+    <div id="content">
+
+      <div class="w3-container w3-quarter w3-card w3-margin" style="height:200px">
+          <h1>Profiles are not ready</h1>
+      </div>
+      {% for page in pages %}
+      <a href="{{ page.location }}">
+      <div class="w3-container w3-quarter w3-card w3-hover-sepia w3-margin" style="height:200px;">
+        <div style="height:150px">
+      <h3>{{ page.title }}</h3>
+      <p>{{ page.info }}</p>
+      </div>
+      <div style="height:50px"
+      <p> {{ page.edited }}</p>
+      </div>
+      </div>
+      </a>
+      {% endfor %}
+    </div>
+
+
+    {{ include("premade/forms.html") }}
+
+  </section>
+  <section class="w3-main" style="margin-left:250px">
+    {{ include("footer.twig") }}
+  </body>
+</section>
+
+{{ include("javascript.html") }}

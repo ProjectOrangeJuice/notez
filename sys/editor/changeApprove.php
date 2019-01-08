@@ -38,6 +38,14 @@ if(isset($page,$value)){
 
           if($value == 1){
 
+
+
+
+            if(isset($_POST["force"])){
+              update($title,$loc,$page);
+
+            }else{
+
             $stmt = $conn->prepare("SELECT publicId
                 FROM public
                WHERE location = :loc
@@ -51,7 +59,7 @@ if(isset($page,$value)){
                   echo "Public issue +".$row["publicId"];
                 }else{
 
-                  $stmt = $conn->prepare("SELECT pageId
+                  $stmt = $conn->prepare("SELECT pageId,content
                       FROM page
                      WHERE pageId = :loc
                       LIMIT 1");
@@ -65,8 +73,11 @@ if(isset($page,$value)){
                   $stmt->bindParam(":loc",$loc);
                   $stmt->bindParam(":title",$title);
                   $stmt->execute();
+                  $searchVal = $row["content"]." ".$title." ".$loc;
+                  updateSearch($loc,$searchVal);
                   echo "Approved updated";
                 }
+              }
 
 
           }else{
@@ -86,4 +97,58 @@ if(isset($page,$value)){
 }
 
 
+
+
+
+
+function updateSearch($public,$content){
+    $content = str_replace( '<', ' <',$content );
+
+    $newContent = strip_tags($content);
+
+    include '../connection.php';
+    include_once '../functions.php';
+    $stmt = $conn->prepare("UPDATE search SET search=:search WHERE location=:pub");
+        $stmt->bindParam(':search', $newContent);  // Bind "$username" to parameter.
+        $stmt->bindParam(':pub', $public);  // Bind "$username" to parameter.
+        $stmt->execute();
+        $count = $stmt->rowCount();
+
+        if($count == 0){
+          $stmt = $conn->prepare("INSERT INTO search VALUES (:location,:pub)");
+              $stmt->bindParam(':location', $public);  // Bind "$username" to parameter.
+              $stmt->bindParam(':pub', $newContent);  // Bind "$username" to parameter.
+              $stmt->execute();
+        }
+
+
+
+}
+
+
+
+
+
+
+function update($title,$loc,$page){
+  include '../connection.php';
+  include_once '../functions.php';
+  $stmt = $conn->prepare("UPDATE public SET pageId=:page, title=:title WHERE location=:loc");
+      $stmt->bindParam(':page', $page);  // Bind "$username" to parameter.
+      $stmt->bindParam(':loc', $loc);  // Bind "$username" to parameter.
+      $stmt->bindParam(':title', $title);  // Bind "$username" to parameter.
+      $stmt->execute();
+
+
+
+      $stmt = $conn->prepare("SELECT pageId,content,title,location
+          FROM page,public
+         WHERE page.pageId = :loc AND page.pageId = public.pageId
+          LIMIT 1");
+          $stmt->bindParam(':loc', $page);  // Bind "$username" to parameter.
+          $stmt->execute();    // Execute the prepared query.
+          $row =$stmt->fetch();
+          $searchVal = $row["content"]." ".$row["title"]." ".$row["location"];
+          updateSearch($loc,$searchVal);
+}
  ?>

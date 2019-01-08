@@ -1,18 +1,58 @@
-<nav>
-<div class="w3-sidebar w3-bar-block w3-large w3-card w3-hide-small w3-hide-medium" id="mySidebar" style="width:250px;z-index:2;">
+<nav >
+<div class="w3-sidebar w3-bar-block w3-large w3-card w3-hide-small w3-hide-medium" id="mySidebar" style="width:250px;margin-top:-15px;z-index:2;">
   <a href="javascript:void(0)" onclick="side()" class="w3-right w3-xlarge w3-padding-large w3-hover-white w3-hide-large" title="Close Menu"></a>
-  <h4 class="w3-bar-item"><b>{{ sideNavTitle}}</b></h4>
+  <style>
+  .searchBox {
+    padding: 6px;
+   border: none;
+   width:120px;
+
+  }
+  .searchButton{
+    float: right;
+  padding: 5px 8px;
+  width:40px;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+  }
+  </style>
+
+
+{% if searchBox %}
+{# commented out
+  <div class="w3-bar-item " style="width:100%;display:inline;">
+     <form action="/quick">
+       <input type="text" class="searchBox " style="width:80%" placeholder="{% if svalue %} {{svalue}} {% else %} Search.. {% endif %}" name="search">
+
+
+       <button class="searchButton" style="width:15%" type="submit"><i class="fa fa-search"></i></button>
+     </form>
+   </div>
+   #}
+
+{% endif %}
+
+
+
+{% if sideNavTitle %}  <h4 class="w3-bar-item"><b>{{ sideNavTitle }}</b></h4> {% endif %}
   {% for item in sideNavItems %}
 
-  {% if item.subitem != "" %}
+  {% if item.si %}
 
-  <a onclick="dropCat('{{ item.nameId }}')" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align">
+
+  <a onclick="dropCat('{{ item.name }}')" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align">
        {{ item.name }} <i class="fa fa-caret-down"></i>
      </a>
-     <div id="{{ item.nameId }}" class="w3-bar-block w3-hide w3-padding-large w3-medium">
-     {% for items  in item.subitem %}
+     <div id="{{ item.name }}" class="w3-bar-block w3-hide w3-padding-large w3-medium
+{% if item.matched %} w3-show {% endif %}
+     ">
+     {% for items  in item.subItem %}
 
-     <a href="{{ items.location }}" class="w3-bar-item w3-button">{{ items.name }}</a>
+
+   <a href="{{ items.location }}" class="w3-bar-item w3-button  {% if items.match %}w3-theme{% endif %}">{{ items.name }}</a>
+
+
 
    {% endfor %}
 
@@ -25,8 +65,8 @@
 
   {% endif %}
 
-  {% if item.subitem == "" %}
-  <a class="w3-bar-item w3-button w3-hover-black" href="{{ item.location }}">{{ item.name }}</a>
+  {% if not item.si %}
+  <a class="w3-bar-item w3-button w3-hover-theme" href="{{ item.location }}">{{ item.name }}</a>
 
   {% endif %}
 
@@ -41,3 +81,14 @@
 </div>
 </nav>
 <div class="w3-overlay w3-hide-large" onclick="side()" style="cursor:pointer;margin-left:250px;" title="close side menu" id="myOverlay"></div>
+
+<script>
+function dropCat(id) {
+    var x = document.getElementById(id);
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+    } else {
+        x.className = x.className.replace(" w3-show", "");
+    }
+}
+</script>

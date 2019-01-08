@@ -9,7 +9,7 @@ foreach($j as $item){
 
 //these are toplevel
 
-  $stmt = "UPDATE public SET parent=0,visable=1 WHERE pageId=:id";
+  $stmt = "UPDATE public SET parent=0,visable=1 WHERE publicId=:id";
   $q = $conn->prepare($stmt);
   $id = $item->id;
   $q->execute(array(":id"=>$id));
@@ -33,7 +33,7 @@ require '../connection.php';
 
   foreach($items as $it){
 
-    $stmt2 = "UPDATE public SET parent=:par,visable=1 WHERE pageId=:id";
+    $stmt2 = "UPDATE public SET parent=:par,visable=1 WHERE publicId=:id";
 
     $q2 = $conn->prepare($stmt2);
 

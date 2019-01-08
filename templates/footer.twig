@@ -1,1 +1,35 @@
-<footer></footer>
+
+{% if(footer) %}
+<style>
+.footer {
+  margin-top:150px;
+}
+</style>
+<footer class="footer w3-container w3-theme w3-padding-16" style="width:100%">
+  <div class="w3-opacity w3-third">
+    Last page change: {{ footer|raw }}
+  </div>
+  <div class="w3-opacity w3-third">
+    These notes should only be used as a guide.
+  </div>
+  <div class="w3-opacity w3-third">
+      Report any bugs to <a href="mailto:bugs@notez.co.uk">bugs@notez.co.uk</a>
+  </div>
+  </footer>
+{% endif %}
+<!-- Matomo -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(["setDoNotTrack", true]);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.the-juggernaut.net/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', '6']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
